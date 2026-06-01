@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 2 — Сетевой и системный администратор</title>
+<style>
+  :root {
+    --red: #cc1f1a;
+    --red-dark: #a01a16;
+    --bg: #ffffff;
+    --sidebar-bg: #f7f7f7;
+    --border: #e0e0e0;
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --code-bg: #1e1e1e;
+    --code-text: #d4d4d4;
+    --note-bg: #fff8e1;
+    --note-border: #f9a825;
+    --tip-bg: #e8f5e9;
+    --tip-border: #388e3c;
+    --warn-bg: #fff3e0;
+    --warn-border: #e65100;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: var(--text); background: var(--bg); line-height: 1.65; font-size: 15px; }
+
+  /* NAV */
+  .topnav { background: #111; color: #fff; display: flex; align-items: center; padding: 0 28px; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.4); gap: 32px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+  .logo-squares { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+  .logo-sq { width: 10px; height: 10px; background: var(--red); border-radius: 1px; }
+  .logo-sq.dark { background: #7a0f0c; }
+  .logo-text { font-weight: 700; font-size: 17px; letter-spacing: 1px; }
+  .topnav-links { display: flex; gap: 24px; }
+  .topnav-links a { color: #ccc; text-decoration: none; font-size: 13px; }
+  .topnav-links a:hover { color: #fff; }
+
+  /* BREADCRUMB */
+  .breadcrumb { background: #1a1a1a; color: #aaa; font-size: 12px; padding: 10px 28px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .breadcrumb a { color: #bbb; text-decoration: none; }
+  .breadcrumb .sep { color: #555; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #111 0%, #1e1e1e 60%, #2a0a09 100%); color: #fff; padding: 52px 28px 48px; }
+  .hero h1 { font-size: 34px; font-weight: 700; margin-bottom: 10px; }
+  .hero p { color: #aaa; font-size: 15px; max-width: 640px; }
+  .hero-meta { margin-top: 16px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .badge { background: rgba(204,31,26,.2); border: 1px solid rgba(204,31,26,.4); color: #ff8a80; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+  /* LAYOUT */
+  .layout { display: flex; }
+  .sidebar { width: 270px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 56px; max-height: calc(100vh - 56px); overflow-y: auto; }
+  .sidebar-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); padding: 0 20px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .sidebar a { display: block; padding: 7px 20px; color: var(--text-muted); text-decoration: none; font-size: 13px; border-left: 3px solid transparent; transition: all .15s; line-height: 1.4; }
+  .sidebar a:hover { color: var(--red); background: rgba(204,31,26,.05); border-left-color: var(--red); }
+  .sidebar-num { display: inline-block; width: 22px; color: var(--red); font-weight: 700; font-size: 12px; }
+
+  /* CONTENT */
+  .content { flex: 1; padding: 40px 52px 80px; max-width: 940px; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 64px; border-bottom: 1px solid var(--border); padding-bottom: 32px; }
+  .section:last-child { border-bottom: none; }
+  .section-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  .section-num { background: var(--red); color: #fff; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; margin-top: 4px; }
+  .section-title { font-size: 22px; font-weight: 700; color: #111; line-height: 1.3; }
+  .section-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  h3 { font-size: 17px; font-weight: 700; color: #222; margin: 28px 0 12px; padding-left: 12px; border-left: 3px solid var(--red); }
+  h4 { font-size: 14px; font-weight: 700; color: #333; margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .5px; }
+  p { margin-bottom: 12px; }
+
+  /* CODE */
+  pre { background: var(--code-bg); color: var(--code-text); border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 14px 0; font-family: 'Cascadia Code','Consolas','Monaco',monospace; font-size: 13.5px; line-height: 1.6; }
+  pre .comment { color: #6a9955; }
+  code { background: #f0f0f0; color: #c7254e; padding: 2px 6px; border-radius: 4px; font-family: 'Cascadia Code','Consolas',monospace; font-size: 13px; }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  /* BOXES */
+  .note, .tip, .warn, .task-box { border-radius: 6px; padding: 14px 18px; margin: 16px 0; font-size: 14px; line-height: 1.55; }
+  .note { background: var(--note-bg); border-left: 4px solid var(--note-border); }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); }
+  .task-box { background: #f3f4f6; border-left: 4px solid #555; font-style: italic; color: #333; }
+  .box-title { font-weight: 700; font-style: normal; display: block; margin-bottom: 4px; }
+  .preinstalled { background: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 6px; padding: 10px 16px; margin: 10px 0; font-size: 13.5px; color: #1565c0; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th { background: #1a1a1a; color: #fff; padding: 10px 14px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+  td code { background: none; color: var(--red); padding: 0; font-weight: 600; }
+
+  /* STEPS */
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 14px 0; }
+  .steps li { counter-increment: step; padding: 10px 0 10px 42px; position: relative; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 10px; width: 26px; height: 26px; background: var(--red); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .steps li:last-child { border-bottom: none; }
+
+  /* PROGRESS */
+  .toc-progress { height: 2px; background: var(--red); position: fixed; top: 56px; left: 0; transition: width .1s; z-index: 99; }
+
+  /* ERROR */
+  .error-row { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+  .error-title { font-weight: 700; color: var(--red); margin-bottom: 6px; font-size: 14px; }
+  .error-cause { color: #555; font-size: 13px; margin-bottom: 6px; }
+
+  /* YAML highlight */
+  .yaml { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 14px 0; font-family: 'Cascadia Code','Consolas',monospace; font-size: 13px; line-height: 1.7; }
+  .yaml .key { color: #89b4fa; }
+  .yaml .val { color: #a6e3a1; }
+  .yaml .comment { color: #6c7086; }
+</style>
+</head>
+<body>
+
+<div class="toc-progress" id="progress"></div>
+
+<nav class="topnav">
+  <a href="#" class="logo">
+    <div class="logo-squares">
+      <div class="logo-sq"></div><div class="logo-sq dark"></div>
+      <div class="logo-sq dark"></div><div class="logo-sq"></div>
+    </div>
+    <span class="logo-text">РЕД ОС</span>
+  </a>
+  <div class="topnav-links">
+    <a href="#">Документация</a>
+    <a href="#">База знаний</a>
+    <a href="module-01.html">← Модуль 1</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="#">Главная</a><span class="sep">›</span>
+  <a href="#">09.02.06-1-2026</a><span class="sep">›</span>
+  <span>Модуль 2</span>
+</div>
+
+<div class="hero">
+  <h1>Модуль 2 — Службы и сервисы</h1>
+  <p>Развёртывание сервисов: RAID, NFS, NTP, Ansible, Docker, Apache, проброс портов, обратный прокси и аутентификация.</p>
+  <div class="hero-meta">
+    <span class="badge">09.02.06-1-2026</span>
+    <span class="badge">РЕД ОС 8</span>
+    <span class="badge">HQ-SRV · BR-SRV · ISP</span>
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-title">Содержание</div>
+  <a href="#precheck"><span class="sidebar-num">⊞</span> Проверка стенда</a>
+  <a href="#task1"><span class="sidebar-num">1.</span> Samba DC (BR-SRV)</a>
+  <a href="#task2"><span class="sidebar-num">2.</span> RAID0 + файловая система</a>
+  <a href="#task3"><span class="sidebar-num">3.</span> NFS-сервер</a>
+  <a href="#task4"><span class="sidebar-num">4.</span> NTP (chrony)</a>
+  <a href="#task5"><span class="sidebar-num">5.</span> Ansible</a>
+  <a href="#task6"><span class="sidebar-num">6.</span> Docker (BR-SRV)</a>
+  <a href="#task7"><span class="sidebar-num">7.</span> Веб-приложение (HQ-SRV)</a>
+  <a href="#task8"><span class="sidebar-num">8.</span> Проброс портов</a>
+  <a href="#task9"><span class="sidebar-num">9.</span> Обратный прокси (ISP)</a>
+  <a href="#task10"><span class="sidebar-num">10.</span> Web-based аутентификация</a>
+  <a href="#task11"><span class="sidebar-num">11.</span> Яндекс Браузер</a>
+  <a href="#errors"><span class="sidebar-num">⚠</span> Ошибки и решения</a>
+</aside>
+
+<main class="content">
+
+<!-- ══════ PRECHECK ══════ -->
+<div class="section" id="precheck">
+  <div class="section-header">
+    <div class="section-num" style="background:#333;font-size:18px;">⊞</div>
+    <div>
+      <div class="section-title">Проверка стенда перед началом</div>
+      <div class="section-subtitle">Стенд Модуля 2 преднастроен согласно Модулю 1</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="box-title">📌 Предустановленные пакеты</span>
+    На стенде уже установлены: <code>bind bind-utils nfs4-acl-tools nfs-utils docker-ce docker-ce-cli docker-compose httpd php php-mysqlnd mariadb-server mariadb nginx httpd-tools mdadm samba samba-client samba-common rsyslog zabbix-server-mysql zabbix-agent2 cups cups-pdf</code><br>
+    Повторно их устанавливать <strong>не нужно</strong>. Команды <code>dnf install ...</code> для этих пакетов можно пропустить или выполнить — ошибки не будет.
+  </div>
+
+  <div class="note">
+    <span class="box-title">🐳 Docker-образы</span>
+    Образы можно скачать заранее через интернет:
+    <pre>systemctl start docker
+docker image pull nextcloud:latest
+docker image pull nginx:latest
+docker image pull mysql:8.0
+systemctl stop docker</pre>
+    Либо загрузить tar-архивы в <code>/root/</code> и импортировать командой <code>docker load &lt; /root/имя_образа.tar</code>
+  </div>
+
+  <h3>Таблица адресации (ваша топология)</h3>
+  <table>
+    <thead><tr><th>Устройство</th><th>Интерфейс</th><th>IP-адрес</th><th>Сеть</th></tr></thead>
+    <tbody>
+      <tr><td><code>ISP</code></td><td>ens18</td><td>DHCP</td><td>Internet</td></tr>
+      <tr><td><code>ISP</code></td><td>ens19 → HQ-RTR</td><td>172.16.1.1/28</td><td>ISP-HQ</td></tr>
+      <tr><td><code>ISP</code></td><td>ens20 → BR-RTR</td><td>172.16.2.1/28</td><td>ISP-BR</td></tr>
+      <tr><td><code>HQ-RTR</code></td><td>WAN → ISP</td><td>172.16.1.2/28</td><td>ISP-HQ</td></tr>
+      <tr><td><code>HQ-RTR</code></td><td>→ HQ-SRV</td><td>192.168.100.1/27</td><td>SRV-Net</td></tr>
+      <tr><td><code>HQ-RTR</code></td><td>→ HQ-CLI</td><td>192.168.200.1/28</td><td>CLI-Net</td></tr>
+      <tr><td><code>BR-RTR</code></td><td>WAN → ISP</td><td>172.16.2.2/28</td><td>ISP-BR</td></tr>
+      <tr><td><code>BR-RTR</code></td><td>→ BR-SRV</td><td>192.168.255.1/28</td><td>BR-Net</td></tr>
+      <tr><td><code>HQ-SRV</code></td><td>ens18</td><td>192.168.100.2/27</td><td>SRV-Net</td></tr>
+      <tr><td><code>HQ-CLI</code></td><td>ens18</td><td>DHCP (192.168.200.x)</td><td>CLI-Net</td></tr>
+      <tr><td><code>BR-SRV</code></td><td>ens18</td><td>192.168.255.2/28</td><td>BR-Net</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Проверка связности перед работой</h3>
+  <pre><span class="comment"># С BR-SRV — трассировка до HQ-SRV</span>
+traceroute 192.168.100.2
+
+<span class="comment"># С BR-SRV — трассировка до HQ-CLI</span>
+traceroute 192.168.200.2
+
+<span class="comment"># Проверка DNS на HQ-SRV</span>
+systemctl status named
+
+<span class="comment"># Проверка DHCP на HQ-RTR</span>
+<span class="comment"># (на EcoRouter)</span>
+sh ip dhcp-server binding</pre>
+</div>
+
+<!-- ══════ TASK 1 — SAMBA ══════ -->
+<div class="section" id="task1">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div>
+      <div class="section-title">Контроллер домена Samba DC</div>
+      <div class="section-subtitle">BR-SRV — домен au-team.irpo (необязательное задание)</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Настроить Samba DC на BR-SRV: домен au-team.irpo, ввести HQ-CLI в домен, создать 5 пользователей (hquser1–5), группу hq, настроить sudo для группы (только cat, grep, id).
+  </div>
+
+  <div class="warn">
+    <span class="box-title">⚠ Примечание</span>
+    Это задание объёмное и трудоёмкое. Если времени мало — пропустите и переходите к заданию 2. Задание 1 можно выполнить в последнюю очередь.
+  </div>
+
+  <h3>1.1 Подготовка HQ-SRV — разрешение зонной передачи</h3>
+  <pre><span class="comment"># На HQ-SRV — открываем named.conf</span>
+nano /etc/named.conf</pre>
+  <p>Внутри блока <code>options { ... }</code> добавьте строку, разрешающую зонную передачу на BR-SRV:</p>
+  <pre>allow-transfer { 192.168.255.2; };</pre>
+  <pre><span class="comment"># Перезапускаем DNS</span>
+systemctl restart named</pre>
+
+  <h3>1.2 Подготовка BR-SRV — SELinux и DNS</h3>
+  <pre><span class="comment"># Переводим SELinux в режим уведомлений (permissive)</span>
+nano /etc/selinux/config</pre>
+  <p>Меняем <code>SELINUX=enforcing</code> на:</p>
+  <pre>SELINUX=permissive</pre>
+  <pre><span class="comment"># Применяем без перезагрузки</span>
+setenforce 0</pre>
+
+  <p>Настраиваем сетевой интерфейс BR-SRV — добавляем DNS-серверы:</p>
+  <pre><span class="comment"># Прописываем HQ-SRV как первый DNS, BR-SRV как второй</span>
+nmcli con mod ens18 \
+  ipv4.dns "192.168.100.2 192.168.255.2" \
+  ipv4.dns-search "au-team.irpo"
+nmcli con up ens18</pre>
+
+  <p>Отключаем конфликт systemd-resolved с Samba DNS:</p>
+  <pre>nano /etc/systemd/resolved.conf</pre>
+  <p>Найдите строку <code>#DNSStubListener=yes</code> и замените на:</p>
+  <pre>DNSStubListener=no</pre>
+  <pre><span class="comment"># Применяем</span>
+systemctl restart systemd-resolved.service NetworkManager
+
+<span class="comment"># Проверяем — в выводе не должно быть 127.0.0.53</span>
+cat /etc/resolv.conf</pre>
+
+  <h3>1.3 Установка Samba (если не предустановлена)</h3>
+  <div class="preinstalled">📦 Пакеты samba samba-client samba-common уже предустановлены. Установка krb5* может потребоваться дополнительно.</div>
+  <pre><span class="comment"># Устанавливаем Kerberos (если нет)</span>
+dnf install krb5* -y</pre>
+
+  <h3>1.4 Создание домена</h3>
+  <pre><span class="comment"># Сохраняем оригинальный smb.conf (он мешает samba-tool)</span>
+mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+
+<span class="comment"># Бэкап kerberos конфига</span>
+cp /etc/krb5.conf /etc/krb5.conf.bak</pre>
+
+  <p>Настраиваем Kerberos — открываем <code>/etc/krb5.conf</code>:</p>
+  <pre>nano /etc/krb5.conf</pre>
+  <p>Приводим файл к следующему виду (полностью заменяем содержимое):</p>
+  <pre>[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ dns_lookup_realm = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+ rdns = false
+ default_realm = AU-TEAM.IRPO
+ default_ccache_name = KEYRING:persistent:%{uid}
+
+[realms]
+AU-TEAM.IRPO = {
+ kdc = br-srv.au-team.irpo
+ admin_server = br-srv.au-team.irpo
+}
+
+[domain_realm]
+ .au-team.irpo = AU-TEAM.IRPO
+ au-team.irpo = AU-TEAM.IRPO</pre>
+
+  <p>Открываем и правим файл шифрования Kerberos:</p>
+  <pre>nano /etc/krb5.conf.d/crypto-policies</pre>
+  <pre>[libdefaults]
+default_tgs_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 RC4-HMAC DES-CBC-CRC DES3-CBC-SHA1 DES-CBC-MD5
+default_tkt_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 RC4-HMAC DES-CBC-CRC DES3-CBC-SHA1 DES-CBC-MD5
+preferred_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 RC4-HMAC DES-CBC-CRC DES3-CBC-SHA1 DES-CBC-MD5</pre>
+
+  <p>Запускаем полуавтоматическую настройку домена:</p>
+  <pre><span class="comment"># Интерактивный режим — проверяем значения и нажимаем Enter</span>
+<span class="comment"># Realm: AU-TEAM.IRPO, Domain: AU-TEAM, DNS backend: SAMBA_INTERNAL</span>
+<span class="comment"># DNS forwarder: 192.168.100.2</span>
+samba-tool domain provision --use-rfc2307 --interactive</pre>
+
+  <pre><span class="comment"># Запускаем Samba</span>
+systemctl enable --now samba
+
+<span class="comment"># Проверяем домен</span>
+samba-tool domain info 127.0.0.1</pre>
+
+  <h3>1.5 Создание пользователей и группы</h3>
+  <pre><span class="comment"># 5 пользователей с паролем P@ssw0rd</span>
+samba-tool user add hquser1 P@ssw0rd
+samba-tool user add hquser2 P@ssw0rd
+samba-tool user add hquser3 P@ssw0rd
+samba-tool user add hquser4 P@ssw0rd
+samba-tool user add hquser5 P@ssw0rd
+
+<span class="comment"># Создаём группу hq и добавляем пользователей</span>
+samba-tool group add hq
+samba-tool group addmembers hq hquser1,hquser2,hquser3,hquser4,hquser5
+
+<span class="comment"># Проверка</span>
+samba-tool user list
+samba-tool group listmembers hq</pre>
+
+  <h3>1.6 Ввод HQ-CLI в домен</h3>
+  <p>На HQ-CLI добавляем BR-SRV как дополнительный DNS:</p>
+  <pre><span class="comment"># На HQ-CLI</span>
+nmcli con mod ens18 ipv4.dns "192.168.100.2 192.168.255.2"
+nmcli con up ens18</pre>
+  <p>Затем запускаем скрипт ввода в домен:</p>
+  <pre><span class="comment"># На HQ-CLI — запускаем скрипт РЕД ОС</span>
+join-to-domain
+<span class="comment"># Вводим: домен au-team.irpo, тип 1 (Windows/SAMBA)</span>
+<span class="comment"># Имя ПК: hq-cli</span>
+<span class="comment"># Администратор: Administrator</span>
+<span class="comment"># Пароль: тот что задавали в samba-tool domain provision</span></pre>
+  <pre><span class="comment"># После успешного ввода — перезагружаем HQ-CLI</span>
+reboot</pre>
+
+  <h3>1.7 Настройка sudo для группы hq (на HQ-CLI)</h3>
+  <p>Создаём файл правил для группы hq:</p>
+  <pre>nano /etc/sudoers.d/hq</pre>
+  <p>Добавляем строку (без ввода пароля, только cat/grep/id):</p>
+  <pre>%hq ALL=(ALL) NOPASSWD:/usr/bin/cat,/usr/bin/grep,/usr/bin/id</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Проверка на BR-SRV</span>
+    <code>samba-tool computer list</code> — HQ-CLI должен появиться в списке.
+  </div>
+</div>
+
+<!-- ══════ TASK 2 — RAID ══════ -->
+<div class="section" id="task2">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div>
+      <div class="section-title">Файловое хранилище — RAID0</div>
+      <div class="section-subtitle">HQ-SRV — два диска по 1 Гб → /dev/md0 → /raid</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Создать RAID0 из двух дисков (1 Гб каждый), имя устройства md0, файловая система ext4, автомонтирование в /raid.
+  </div>
+
+  <div class="preinstalled">📦 Пакет mdadm уже предустановлен.</div>
+
+  <h3>2.1 Определяем имена дисков</h3>
+  <pre><span class="comment"># Смотрим список всех дисков</span>
+lsblk
+
+<span class="comment"># Ожидаемый вывод: помимо sda (системный диск),</span>
+<span class="comment"># должны быть sdb и sdc по 1G каждый</span></pre>
+
+  <div class="note">
+    <span class="box-title">📌 Если диски называются иначе</span>
+    Если ваши дополнительные диски называются не sdb/sdc, а, например, vdb/vdc — подставьте их имена во все команды ниже.
+  </div>
+
+  <h3>2.2 Создание RAID0</h3>
+  <pre><span class="comment"># Создаём массив RAID0 из двух дисков</span>
+<span class="comment"># -l 0 — уровень RAID0 (страйп), -n 2 — количество дисков</span>
+mdadm --create --verbose /dev/md0 -l 0 -n 2 /dev/sdb /dev/sdc
+
+<span class="comment"># Проверяем — у sdb и sdc должен появиться md0</span>
+lsblk</pre>
+
+  <h3>2.3 Сохранение конфигурации массива</h3>
+  <pre><span class="comment"># Сохраняем конфигурацию в mdadm.conf (чтобы массив восстанавливался после перезагрузки)</span>
+mdadm --detail --scan --verbose >> /etc/mdadm.conf
+
+<span class="comment"># Проверяем содержимое</span>
+cat /etc/mdadm.conf</pre>
+
+  <h3>2.4 Форматирование и монтирование</h3>
+  <pre><span class="comment"># Форматируем RAID в ext4</span>
+mkfs.ext4 /dev/md0
+
+<span class="comment"># Создаём директорию для монтирования</span>
+mkdir /raid
+
+<span class="comment"># Монтируем вручную (для проверки)</span>
+mount /dev/md0 /raid
+
+<span class="comment"># Проверяем — /dev/md0 должен быть примонтирован в /raid</span>
+lsblk -f
+df -h</pre>
+
+  <h3>2.5 Автомонтирование через fstab</h3>
+  <pre><span class="comment"># Открываем fstab</span>
+nano /etc/fstab</pre>
+  <p>Добавляем в конец файла строку:</p>
+  <pre>/dev/md0    /raid    ext4    defaults    0    0</pre>
+  <pre><span class="comment"># Проверяем fstab без перезагрузки</span>
+mount -av
+<span class="comment"># Строка для /raid должна показать "already mounted" или "successfully mounted"</span></pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Ожидаемый результат</span>
+    <code>df -h</code> → строка <code>/dev/md0 2.0G ... /raid</code><br>
+    После перезагрузки: <code>lsblk</code> → md0 примонтирован в /raid автоматически.
+  </div>
+</div>
+
+<!-- ══════ TASK 3 — NFS ══════ -->
+<div class="section" id="task3">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div>
+      <div class="section-title">NFS-сервер</div>
+      <div class="section-subtitle">HQ-SRV экспортирует /raid/nfs → HQ-CLI монтирует в /mnt/nfs</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Папка общего доступа /raid/nfs на HQ-SRV, доступ rw только для сети 192.168.200.0/28 (HQ-CLI). На HQ-CLI — автомонтирование в /mnt/nfs.
+  </div>
+
+  <div class="preinstalled">📦 Пакеты nfs4-acl-tools и nfs-utils уже предустановлены.</div>
+
+  <h3>3.1 Настройка сервера NFS (HQ-SRV)</h3>
+  <pre><span class="comment"># Создаём общую папку внутри RAID-массива</span>
+mkdir /raid/nfs
+
+<span class="comment"># Открываем права (чтение и запись для всех)</span>
+chmod -R 777 /raid/nfs</pre>
+
+  <p>Создаём экспорт NFS — открываем файл /etc/exports:</p>
+  <pre>nano /etc/exports</pre>
+  <p>Добавляем строку:</p>
+  <pre>/raid/nfs    192.168.200.0/28(rw,no_root_squash)</pre>
+  <p>Параметры: <code>rw</code> — чтение и запись, <code>no_root_squash</code> — root на клиенте имеет права root на шаре.</p>
+  <pre><span class="comment"># Запускаем NFS-сервер и добавляем в автозагрузку</span>
+systemctl enable --now nfs-server.service
+
+<span class="comment"># Применяем экспорты (читаем /etc/exports)</span>
+exportfs -arv
+<span class="comment"># Ожидаем: exporting 192.168.200.0/28:/raid/nfs</span>
+
+<span class="comment"># Проверяем активные экспорты</span>
+exportfs -v</pre>
+
+  <h3>3.2 Настройка клиента NFS (HQ-CLI)</h3>
+  <pre><span class="comment"># На HQ-CLI — создаём точку монтирования</span>
+mkdir /mnt/nfs
+
+chmod -R 777 /mnt/nfs</pre>
+
+  <p>Добавляем автомонтирование в fstab на HQ-CLI:</p>
+  <pre>nano /etc/fstab</pre>
+  <p>Добавляем строку:</p>
+  <pre>192.168.100.2:/raid/nfs    /mnt/nfs    nfs    auto    0    0</pre>
+  <pre><span class="comment"># Монтируем всё из fstab</span>
+mount -av
+<span class="comment"># Должна появиться строка: /mnt/nfs mounted successfully</span>
+
+<span class="comment"># Проверяем</span>
+df -h | grep nfs</pre>
+
+  <h3>3.3 Проверка работы</h3>
+  <pre><span class="comment"># На HQ-SRV — создаём тестовый файл</span>
+touch /raid/nfs/test.txt
+
+<span class="comment"># На HQ-CLI — проверяем что файл виден</span>
+ls /mnt/nfs/
+<span class="comment"># Должны увидеть: test.txt</span></pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Ожидаемый результат</span>
+    Файлы, созданные на HQ-SRV в /raid/nfs, мгновенно видны на HQ-CLI в /mnt/nfs, и наоборот.
+  </div>
+</div>
+
+<!-- ══════ TASK 4 — NTP ══════ -->
+<div class="section" id="task4">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div>
+      <div class="section-title">Служба сетевого времени (NTP)</div>
+      <div class="section-subtitle">Сервер chrony на ISP, клиенты: HQ-SRV, HQ-CLI, BR-SRV</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    NTP-сервер на ISP (stratum 5), вышестоящий сервер ntp1.vniiftri.ru. Клиенты: HQ-SRV, HQ-CLI, BR-SRV (синхронизируются с ISP).
+  </div>
+
+  <h3>4.1 Настройка NTP-сервера на ISP</h3>
+  <pre><span class="comment"># Открываем конфиг chrony на ISP</span>
+nano /etc/chrony.conf</pre>
+
+  <p>Приводим файл к следующему виду (оставляем один сервер, остальные комментируем, добавляем stratum и allow):</p>
+  <pre><span class="comment"># Оставляем один вышестоящий сервер, добавляем iburst prefer minstratum 4</span>
+server ntp1.vniiftri.ru iburst prefer minstratum 4
+
+<span class="comment"># Остальные серверы ЗАКОММЕНТИРОВАТЬ (поставить # перед строками)</span>
+#server ntp2.vniiftri.ru iburst
+#server ntp3.vniiftri.ru iburst
+#server ntp4.vniiftri.ru iburst
+
+<span class="comment"># Добавляем в конец файла:</span>
+local stratum 5
+allow 0.0.0.0/0</pre>
+
+  <p><code>local stratum 5</code> — ISP будет выдавать время с уровнем 5, даже если не синхронизирован с вышестоящим. <code>allow 0.0.0.0/0</code> — разрешаем синхронизацию всем клиентам.</p>
+  <pre><span class="comment"># Перезапускаем chrony</span>
+systemctl restart chronyd
+
+<span class="comment"># Проверяем синхронизацию с вышестоящим сервером</span>
+chronyc sources
+<span class="comment"># Ожидаем: строка с ntp1.vniiftri.ru, stratum 4–5</span></pre>
+
+  <h3>4.2 Настройка клиентов офиса HQ (HQ-SRV и HQ-CLI)</h3>
+  <p>Выполнить на обоих устройствах:</p>
+  <pre><span class="comment"># Открываем конфиг chrony</span>
+nano /etc/chrony.conf</pre>
+  <p>Комментируем все строки <code>server ...</code> по умолчанию и добавляем ISP:</p>
+  <pre><span class="comment"># Комментируем все существующие строки server/pool</span>
+#server ntp1.vniiftri.ru iburst
+#server ntp2.vniiftri.ru iburst
+#server ntp3.vniiftri.ru iburst
+#server ntp4.vniiftri.ru iburst
+
+<span class="comment"># Добавляем ISP как NTP-сервер</span>
+server 172.16.1.1 iburst prefer</pre>
+  <pre><span class="comment"># Перезапускаем</span>
+systemctl restart chronyd
+
+<span class="comment"># Проверяем — должен показать ISP (172.16.1.1) со stratum 5</span>
+chronyc sources</pre>
+
+  <h3>4.3 Настройка клиентов офиса BR (BR-SRV)</h3>
+  <pre>nano /etc/chrony.conf</pre>
+  <p>Аналогично, но ISP для офиса BR:</p>
+  <pre>#server ntp1.vniiftri.ru iburst
+#server ntp2.vniiftri.ru iburst
+#server ntp3.vniiftri.ru iburst
+#server ntp4.vniiftri.ru iburst
+
+server 172.16.2.1 iburst prefer</pre>
+  <pre>systemctl restart chronyd
+chronyc sources</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Ожидаемый результат</span>
+    На HQ-SRV/HQ-CLI: <code>chronyc sources</code> показывает <code>* 172.16.1.1</code> со stratum 5.<br>
+    На BR-SRV: <code>chronyc sources</code> показывает <code>* 172.16.2.1</code> со stratum 5.
+  </div>
+</div>
+
+<!-- ══════ TASK 5 — ANSIBLE ══════ -->
+<div class="section" id="task5">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div>
+      <div class="section-title">Ansible</div>
+      <div class="section-subtitle">BR-SRV — инвентарь, ping всех хостов</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Ansible на BR-SRV, рабочий каталог /etc/ansible, инвентарь: HQ-SRV, HQ-CLI, HQ-RTR, BR-RTR. Все хосты отвечают pong на ping без ошибок.
+  </div>
+
+  <h3>5.1 Установка Ansible</h3>
+  <pre><span class="comment"># Устанавливаем Ansible и sshpass (нужен для аутентификации по паролю)</span>
+dnf install ansible sshpass -y</pre>
+
+  <h3>5.2 Создание файла инвентаря</h3>
+  <pre><span class="comment"># Открываем файл инвентаря</span>
+nano /etc/ansible/hosts</pre>
+  <p>Содержимое файла (используем ваши IP-адреса):</p>
+  <pre>[hq]
+<span class="comment"># HQ-RTR (EcoRouter) — подключаемся как net_admin на стандартный SSH</span>
+192.168.100.1 ansible_user=net_admin ansible_password=P@ssw0rd
+
+<span class="comment"># HQ-SRV — подключаемся как sshuser через порт 2026</span>
+192.168.100.2 ansible_user=sshuser ansible_password=P@ssw0rd ansible_port=2026
+
+<span class="comment"># HQ-CLI — подключаемся как user</span>
+192.168.200.2 ansible_user=user ansible_password=user
+
+[br]
+<span class="comment"># BR-RTR (EcoRouter) — подключаемся как net_admin</span>
+192.168.255.1 ansible_user=net_admin ansible_password=P@ssw0rd</pre>
+
+  <div class="note">
+    <span class="box-title">📌 IP HQ-CLI</span>
+    Если HQ-CLI получает адрес по DHCP, уточните текущий IP командой <code>ip a</code> на HQ-CLI и замените 192.168.200.2 на фактический.
+  </div>
+
+  <h3>5.3 Настройка ansible.cfg</h3>
+  <pre>nano /etc/ansible/ansible.cfg</pre>
+  <p>Добавляем или находим секцию <code>[defaults]</code> и прописываем:</p>
+  <pre>[defaults]
+host_key_checking = False
+interpreter_python = auto_silent</pre>
+  <p><code>host_key_checking = False</code> — отключает проверку SSH-ключей хостов (нет запроса "добавить в known_hosts"). <code>interpreter_python = auto_silent</code> — убирает предупреждения об обнаружении Python.</p>
+
+  <h3>5.4 Проверка связности</h3>
+  <pre><span class="comment"># Запускаем ping на всех хостах</span>
+ansible all -m ping
+
+<span class="comment"># Ожидаемый результат для каждого хоста:</span>
+<span class="comment"># 192.168.100.2 | SUCCESS => {</span>
+<span class="comment">#     "ping": "pong"</span>
+<span class="comment"># }</span></pre>
+
+  <div class="warn">
+    <span class="box-title">⚠ Если HQ-RTR или BR-RTR не отвечает на ping</span>
+    EcoRouter может не иметь Python, необходимого для Ansible. В этом случае для маршрутизаторов используйте модуль raw вместо ping:<br>
+    <code>ansible 192.168.100.1 -m raw -a "hostname"</code><br>
+    Если RTR вообще не доступен через SSH от BR-SRV — убедитесь что маршрут до 192.168.100.1 существует (через GRE-туннель).
+  </div>
+</div>
+
+<!-- ══════ TASK 6 — DOCKER ══════ -->
+<div class="section" id="task6">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div>
+      <div class="section-title">Веб-приложение в Docker</div>
+      <div class="section-subtitle">BR-SRV — контейнеры testapp (порт 8080) + db (MariaDB)</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Docker на BR-SRV: контейнер testapp (site:latest, порт 8080) + db (mariadb:10.11, порт 3306). БД: testdb, пользователь test / P@ssw0rd. Приложение доступно снаружи через 192.168.255.2:8080.
+  </div>
+
+  <div class="preinstalled">📦 Пакеты docker-ce, docker-ce-cli, docker-compose уже предустановлены.</div>
+
+  <h3>6.1 Запуск Docker</h3>
+  <pre><span class="comment"># Запускаем Docker и добавляем в автозагрузку</span>
+systemctl enable docker --now
+
+<span class="comment"># Проверяем статус</span>
+systemctl status docker</pre>
+
+  <h3>6.2 Загрузка образов</h3>
+  <p>Способ А — загрузка из tar-архивов в /root (если образы уже скачаны):</p>
+  <pre><span class="comment"># Смотрим какие архивы есть</span>
+ls -l /root/
+
+<span class="comment"># Импортируем образы (имена файлов могут отличаться)</span>
+docker load < /root/site_latest.tar
+docker load < /root/mariadb_latest.tar
+
+<span class="comment"># Либо с Additional.iso (если диск подключён)</span>
+lsblk
+mount /dev/sr0 /mnt/
+docker load < /mnt/docker/site_latest.tar
+docker load < /mnt/docker/mariadb_latest.tar</pre>
+
+  <p>Способ Б — скачать через интернет (если есть доступ):</p>
+  <pre>docker pull mariadb:10.11
+<span class="comment"># site:latest — специфический образ из задания, может быть только на iso</span></pre>
+
+  <pre><span class="comment"># Проверяем список образов</span>
+docker image ls
+<span class="comment"># Должны быть: site:latest и mariadb:10.11</span></pre>
+
+  <h3>6.3 Создание docker-compose файла</h3>
+  <pre>nano /root/web.yaml</pre>
+  <p>Полное содержимое файла (используем IP BR-SRV = 192.168.255.2):</p>
+  <pre>services:
+  testapp:
+    container_name: testapp
+    image: site:latest
+    restart: always
+    ports:
+      - "8080:8000"
+    environment:
+      DB_HOST: "192.168.255.2"
+      DB_PORT: "3306"
+      DB_NAME: testdb
+      DB_USER: test
+      DB_PASS: P@ssw0rd
+      DB_TYPE: maria
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: mariadb:10.11
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      DB_USER: test
+      DB_PASS: P@ssw0rd
+      DB_NAME: testdb
+      MARIADB_ROOT_PASSWORD: P@ssw0rd</pre>
+
+  <div class="note">
+    <span class="box-title">📌 Пояснение параметров</span>
+    <code>ports: "8080:8000"</code> — внешний порт 8080 → внутренний 8000 в контейнере.<br>
+    <code>DB_HOST</code> — IP BR-SRV (192.168.255.2), т.к. оба контейнера на одном хосте.<br>
+    <code>depends_on: db</code> — testapp стартует только после запуска db.<br>
+    <code>MARIADB_ROOT_PASSWORD</code> — пароль root MariaDB в контейнере.
+  </div>
+
+  <h3>6.4 Запуск контейнеров</h3>
+  <pre><span class="comment"># Запускаем стек в фоновом режиме</span>
+docker-compose -f /root/web.yaml up -d
+
+<span class="comment"># Смотрим запущенные контейнеры</span>
+docker ps
+<span class="comment"># Ожидаем: testapp и db со статусом "Up"</span>
+<span class="comment"># Если testapp перезапускается — база ещё не создана, это нормально</span></pre>
+
+  <h3>6.5 Создание базы данных в контейнере</h3>
+  <pre><span class="comment"># Заходим в контейнер db и подключаемся к MariaDB</span>
+docker exec -it db mysql -u root -p
+<span class="comment"># Пароль: P@ssw0rd</span></pre>
+  <p>Выполняем SQL-команды внутри MariaDB:</p>
+  <pre><span class="comment">-- Создаём базу данных</span>
+CREATE DATABASE testdb;
+
+<span class="comment">-- Создаём пользователя (% = с любого хоста)</span>
+CREATE USER 'test'@'%' IDENTIFIED BY 'P@ssw0rd';
+
+<span class="comment">-- Даём права пользователю на базу</span>
+GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%';
+
+<span class="comment">-- Применяем права</span>
+FLUSH PRIVILEGES;
+
+<span class="comment">-- Проверяем базы</span>
+SHOW DATABASES;
+
+<span class="comment">-- Выходим</span>
+\q</pre>
+
+  <pre><span class="comment"># Перезапускаем стек — теперь testapp подключится к базе</span>
+docker-compose -f /root/web.yaml stop
+docker-compose -f /root/web.yaml up -d
+
+<span class="comment"># Проверяем — оба контейнера должны быть "Up"</span>
+docker ps</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Проверка приложения</span>
+    На HQ-CLI в браузере: <code>http://192.168.255.2:8080</code><br>
+    Должно открыться веб-приложение (таблица с кнопкой «Добавить запись»).
+  </div>
+</div>
+
+<!-- ══════ TASK 7 — WEB APP HQ-SRV ══════ -->
+<div class="section" id="task7">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div>
+      <div class="section-title">Веб-приложение на HQ-SRV</div>
+      <div class="section-subtitle">Apache + MariaDB + PHP — файлы с Additional.iso</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Apache + MariaDB на HQ-SRV. Импорт dump.sql в webdb. Пользователь web / P@ssw0rd. Скопировать index.php в /var/www/html/. Приложение доступно по http://192.168.100.2.
+  </div>
+
+  <div class="preinstalled">📦 Пакеты httpd, php, php-mysqlnd, mariadb-server, mariadb уже предустановлены.</div>
+
+  <h3>7.1 SELinux — переводим в permissive</h3>
+  <pre>nano /etc/selinux/config</pre>
+  <p>Меняем строку на:</p>
+  <pre>SELINUX=permissive</pre>
+  <pre>setenforce 0</pre>
+
+  <h3>7.2 Запуск Apache и MariaDB</h3>
+  <pre><span class="comment"># Запускаем Apache (httpd)</span>
+systemctl enable httpd --now
+
+<span class="comment"># Запускаем MariaDB</span>
+systemctl enable mariadb --now
+
+<span class="comment"># Проверяем статусы</span>
+systemctl status httpd
+systemctl status mariadb</pre>
+
+  <h3>7.3 Первичная настройка MariaDB</h3>
+  <pre><span class="comment"># Запускаем мастер безопасной настройки</span>
+mysql_secure_installation</pre>
+  <p>Отвечаем на вопросы:</p>
+  <ol class="steps">
+    <li>Enter current password for root: просто нажмите Enter (пусто)</li>
+    <li>Switch to unix_socket authentication? → <strong>n</strong></li>
+    <li>Change the root password? → <strong>Y</strong>, задаём пароль (например P@ssw0rd)</li>
+    <li>Remove anonymous users? → <strong>Y</strong></li>
+    <li>Disallow root login remotely? → <strong>Y</strong></li>
+    <li>Remove test database? → <strong>Y</strong></li>
+    <li>Reload privilege tables? → <strong>Y</strong></li>
+  </ol>
+
+  <h3>7.4 Монтирование Additional.iso</h3>
+  <pre><span class="comment"># Проверяем подключён ли диск</span>
+lsblk
+<span class="comment"># Ищем sr0 — это CD-ROM</span>
+
+<span class="comment"># Монтируем</span>
+mount /dev/sr0 /mnt/
+
+<span class="comment"># Смотрим содержимое</span>
+ls -l /mnt/
+ls -l /mnt/web</pre>
+
+  <h3>7.5 Создание базы данных и импорт данных</h3>
+  <pre><span class="comment"># Подключаемся к MariaDB под root</span>
+mysql -u root -p</pre>
+  <p>Выполняем SQL-команды:</p>
+  <pre><span class="comment">-- Создаём базу</span>
+CREATE DATABASE webdb;
+
+<span class="comment">-- Создаём пользователя web</span>
+CREATE USER 'web'@'%' IDENTIFIED BY 'P@ssw0rd';
+
+<span class="comment">-- Даём права</span>
+GRANT ALL PRIVILEGES ON webdb.* TO 'web'@'%';
+
+FLUSH PRIVILEGES;
+
+quit;</pre>
+
+  <pre><span class="comment"># Импортируем данные из дампа</span>
+mysql webdb < /mnt/web/dump.sql
+<span class="comment"># Если нет ошибок — импорт прошёл успешно</span></pre>
+
+  <h3>7.6 Копирование файлов веб-приложения</h3>
+  <pre><span class="comment"># Копируем index.php и logo.png в корень веб-сервера</span>
+cp /mnt/web/index.php /var/www/html/
+cp /mnt/web/logo.png /var/www/html/
+
+<span class="comment"># Если в /mnt/web/ есть директория images — копируем её тоже</span>
+cp -r /mnt/web/images /var/www/html/ 2>/dev/null || true</pre>
+
+  <h3>7.7 Редактирование index.php — данные подключения к БД</h3>
+  <pre>nano /var/www/html/index.php</pre>
+  <p>Найдите в начале файла переменные подключения и задайте:</p>
+  <pre><span class="comment"><?php</span>
+$servername = "localhost";
+$username = "web";
+$password = "P@ssw0rd";
+$dbname = "webdb";</pre>
+
+  <h3>7.8 Перезапуск и проверка</h3>
+  <pre><span class="comment"># Перезапускаем Apache</span>
+systemctl restart httpd
+
+<span class="comment"># Открываем порт 80 в firewall (если закрыт)</span>
+firewall-cmd --permanent --add-service=http
+firewall-cmd --reload</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Проверка</span>
+    На HQ-CLI в браузере: <code>http://192.168.100.2</code><br>
+    Должна открыться страница «База данных сотрудников» с данными из dump.sql.
+  </div>
+</div>
+
+<!-- ══════ TASK 8 — PORT FORWARDING ══════ -->
+<div class="section" id="task8">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div>
+      <div class="section-title">Статическая трансляция портов (DNAT)</div>
+      <div class="section-subtitle">HQ-RTR и BR-RTR — проброс портов 8080 и 2026</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    HQ-RTR: 8080→HQ-SRV:80, 2026→HQ-SRV:2026.<br>
+    BR-RTR: 8080→BR-SRV:8080, 2026→BR-SRV:2026.
+  </div>
+
+  <div class="warn">
+    <span class="box-title">⚠ EcoRouter — синтаксис DNAT</span>
+    В вашей топологии HQ-RTR и BR-RTR — это EcoRouter, а не Linux. Поэтому используется синтаксис EcoRouter, а не nftables.
+  </div>
+
+  <h3>8.1 Проброс портов на HQ-RTR (EcoRouter)</h3>
+  <p>Подключаемся к HQ-RTR и настраиваем DNAT:</p>
+  <pre><span class="comment"># Входим в режим конфигурации</span>
+configure
+
+<span class="comment"># Создаём пул адресов для DNAT на HQ-SRV</span>
+nat destination
+pool HQ_SRV_WEB
+ip address-range 192.168.100.2
+exit
+
+<span class="comment"># Создаём набор правил DNAT</span>
+ruleset DNAT_HQ
+from zone UNTRUST
+
+<span class="comment"># Правило 1: 8080 снаружи → 80 на HQ-SRV (веб-приложение Apache)</span>
+rule 1
+match destination-port 8080
+match protocol tcp
+action destination-nat pool HQ_SRV_WEB port 80
+enable
+exit
+
+<span class="comment"># Правило 2: 2026 снаружи → 2026 на HQ-SRV (SSH)</span>
+rule 2
+match destination-port 2026
+match protocol tcp
+action destination-nat pool HQ_SRV_WEB port 2026
+enable
+exit
+exit
+exit
+
+end
+commit
+confirm</pre>
+
+  <div class="note">
+    <span class="box-title">📌 Альтернативный вариант — ip dnat (если выше не работает)</span>
+    <pre>configure
+ip dnat
+rule 1
+external-port 8080
+internal-address 192.168.100.2
+internal-port 80
+protocol tcp
+enable
+exit
+rule 2
+external-port 2026
+internal-address 192.168.100.2
+internal-port 2026
+protocol tcp
+enable
+exit
+exit
+end
+commit
+confirm</pre>
+  </div>
+
+  <h3>8.2 Проброс портов на BR-RTR (EcoRouter)</h3>
+  <pre>configure
+
+nat destination
+pool BR_SRV
+ip address-range 192.168.255.2
+exit
+
+ruleset DNAT_BR
+from zone UNTRUST
+
+<span class="comment"># Правило 1: 8080 снаружи → 8080 на BR-SRV (Docker testapp)</span>
+rule 1
+match destination-port 8080
+match protocol tcp
+action destination-nat pool BR_SRV port 8080
+enable
+exit
+
+<span class="comment"># Правило 2: 2026 снаружи → 2026 на BR-SRV (SSH)</span>
+rule 2
+match destination-port 2026
+match protocol tcp
+action destination-nat pool BR_SRV port 2026
+enable
+exit
+exit
+exit
+
+end
+commit
+confirm</pre>
+
+  <h3>8.3 Проверка проброса портов</h3>
+  <pre><span class="comment"># С ISP — подключаемся к HQ-SRV по SSH через HQ-RTR</span>
+ssh sshuser@172.16.1.2 -p 2026
+<span class="comment"># Должен появиться баннер "Authorized access only" и запрос пароля</span>
+
+<span class="comment"># С ISP — подключаемся к BR-SRV по SSH через BR-RTR</span>
+ssh sshuser@172.16.2.2 -p 2026
+
+<span class="comment"># Из браузера HQ-CLI — веб через HQ-RTR</span>
+<span class="comment"># http://172.16.1.2:8080 → должно открыть сайт Apache с HQ-SRV</span>
+
+<span class="comment"># Из браузера HQ-CLI — Docker через BR-RTR</span>
+<span class="comment"># http://172.16.2.2:8080 → должно открыть testapp с BR-SRV</span></pre>
+</div>
+
+<!-- ══════ TASK 9 — REVERSE PROXY ══════ -->
+<div class="section" id="task9">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <div>
+      <div class="section-title">Обратный прокси-сервер nginx на ISP</div>
+      <div class="section-subtitle">web.au-team.irpo → HQ-SRV, docker.au-team.irpo → BR-SRV testapp</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    nginx на ISP как reverse proxy: web.au-team.irpo → 172.16.1.2:8080 (HQ-SRV), docker.au-team.irpo → 172.16.2.2:8080 (BR-SRV testapp).
+  </div>
+
+  <div class="preinstalled">📦 Пакет nginx уже предустановлен.</div>
+
+  <h3>9.1 SELinux на ISP — permissive</h3>
+  <pre>nano /etc/selinux/config</pre>
+  <p>Меняем на <code>SELINUX=permissive</code>, затем:</p>
+  <pre>setenforce 0</pre>
+
+  <h3>9.2 Запуск nginx</h3>
+  <pre>systemctl enable --now nginx
+systemctl status nginx</pre>
+
+  <h3>9.3 Настройка виртуальных хостов</h3>
+  <pre>nano /etc/nginx/nginx.conf</pre>
+  <p>Прокручиваем в самый конец файла. Перед последней <code>}</code> добавляем два блока server:</p>
+  <pre><span class="comment"># Виртуальный хост для веб-приложения на HQ-SRV</span>
+server {
+    listen 80;
+    server_name web.au-team.irpo;
+
+    location / {
+        proxy_pass http://172.16.1.2:8080;
+    }
+}
+
+<span class="comment"># Виртуальный хост для Docker-приложения на BR-SRV</span>
+server {
+    listen 80;
+    server_name docker.au-team.irpo;
+
+    location / {
+        proxy_pass http://172.16.2.2:8080;
+    }
+}</pre>
+
+  <pre><span class="comment"># Проверяем синтаксис конфига</span>
+nginx -t
+<span class="comment"># Ожидаем: syntax is ok, test is successful</span>
+
+<span class="comment"># Перезапускаем nginx</span>
+systemctl restart nginx</pre>
+
+  <h3>9.4 Добавление DNS-записей на HQ-CLI (для тестирования)</h3>
+  <p>Т.к. в DNS-зоне HQ-SRV записи web/docker указывают на внутренние IP, нам нужно переопределить их в /etc/hosts на HQ-CLI:</p>
+  <pre>nano /etc/hosts</pre>
+  <p>Добавляем строки в конец файла:</p>
+  <pre><span class="comment"># Проксирование через ISP (nginx reverse proxy)</span>
+172.16.2.1    docker.au-team.irpo
+172.16.1.1    web.au-team.irpo</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Проверка</span>
+    На HQ-CLI в браузере:<br>
+    <code>http://web.au-team.irpo</code> → открывается сайт с HQ-SRV<br>
+    <code>http://docker.au-team.irpo</code> → открывается testapp с BR-SRV
+  </div>
+</div>
+
+<!-- ══════ TASK 10 — WEB AUTH ══════ -->
+<div class="section" id="task10">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div>
+      <div class="section-title">Web-based аутентификация</div>
+      <div class="section-subtitle">ISP nginx — Basic Auth для web.au-team.irpo</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    При обращении к web.au-team.irpo запрашивать логин/пароль. Логин WEB, пароль P@ssw0rd. Файл паролей /etc/nginx/.htpasswd.
+  </div>
+
+  <div class="preinstalled">📦 Пакет httpd-tools уже предустановлен.</div>
+
+  <h3>10.1 Создание файла паролей</h3>
+  <pre><span class="comment"># Создаём файл .htpasswd и добавляем пользователя WEB</span>
+<span class="comment"># Флаг -c создаёт новый файл, WEB — имя пользователя</span>
+htpasswd -c /etc/nginx/.htpasswd WEB
+<span class="comment"># Вводим пароль: P@ssw0rd (дважды)</span>
+
+<span class="comment"># Проверяем файл</span>
+cat /etc/nginx/.htpasswd
+<span class="comment"># Должна быть строка вида: WEB:$apr1$...</span></pre>
+
+  <h3>10.2 Добавление аутентификации в nginx.conf</h3>
+  <pre>nano /etc/nginx/nginx.conf</pre>
+  <p>Находим блок <code>server</code> для <code>web.au-team.irpo</code> и добавляем директивы внутрь блока <code>location /</code>:</p>
+  <pre>server {
+    listen 80;
+    server_name web.au-team.irpo;
+
+    location / {
+        proxy_pass http://172.16.1.2:8080;
+        auth_basic "Restricted area";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
+}</pre>
+
+  <pre><span class="comment"># Проверяем синтаксис</span>
+nginx -t
+
+<span class="comment"># Перезапускаем nginx</span>
+systemctl restart nginx</pre>
+
+  <div class="tip">
+    <span class="box-title">✅ Проверка</span>
+    На HQ-CLI в браузере перейдите на <code>http://web.au-team.irpo</code><br>
+    Должно появиться окно входа с запросом логина и пароля.<br>
+    Вводим: логин <code>WEB</code>, пароль <code>P@ssw0rd</code> → должен открыться сайт.
+  </div>
+</div>
+
+<!-- ══════ TASK 11 — YANDEX ══════ -->
+<div class="section" id="task11">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <div>
+      <div class="section-title">Установка Яндекс Браузер</div>
+      <div class="section-subtitle">HQ-CLI — установка из репозитория</div>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <span class="box-title">Задание</span>
+    Установить Яндекс Браузер на HQ-CLI. Зафиксировать установку в отчёте.
+  </div>
+
+  <pre><span class="comment"># Ищем пакет в репозиториях</span>
+dnf search yandex
+<span class="comment"># Ожидаем: yandex-browser-stable.x86_64 : Yandex Browser</span>
+
+<span class="comment"># Устанавливаем</span>
+dnf install yandex-browser-stable -y</pre>
+
+  <p>После установки браузер доступен через:</p>
+  <p>Главное меню → Интернет → Yandex Browser</p>
+
+  <pre><span class="comment"># Или запустить из терминала</span>
+yandex-browser-stable &</pre>
+</div>
+
+<!-- ══════ ERRORS ══════ -->
+<div class="section" id="errors">
+  <div class="section-header">
+    <div class="section-num" style="background:#c62828;font-size:18px;">⚠</div>
+    <div>
+      <div class="section-title">Возможные ошибки и их решение</div>
+      <div class="section-subtitle">Диагностика типовых проблем Модуля 2</div>
+    </div>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ RAID не создаётся: mdadm: error — not enough devices</div>
+    <div class="error-cause">Причина: диски уже разбиты на разделы или содержат данные.</div>
+    <pre><span class="comment"># Очищаем диски перед созданием RAID</span>
+wipefs -a /dev/sdb
+wipefs -a /dev/sdc
+<span class="comment"># Повторяем команду mdadm --create</span></pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ NFS: mount.nfs: Connection timed out на HQ-CLI</div>
+    <div class="error-cause">Причина: firewall на HQ-SRV блокирует NFS, или nfs-server не запущен.</div>
+    <pre><span class="comment"># На HQ-SRV — проверяем статус</span>
+systemctl status nfs-server
+
+<span class="comment"># Открываем NFS в firewall</span>
+firewall-cmd --permanent --add-service=nfs
+firewall-cmd --permanent --add-service=rpcbind
+firewall-cmd --permanent --add-service=mountd
+firewall-cmd --reload
+
+<span class="comment"># Проверяем экспорты</span>
+exportfs -v</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ Docker: контейнер testapp постоянно перезапускается</div>
+    <div class="error-cause">Причина: база данных testdb не создана или пользователь test не имеет прав.</div>
+    <pre><span class="comment"># Смотрим логи контейнера</span>
+docker logs testapp
+
+<span class="comment"># Заходим в db и проверяем базы</span>
+docker exec -it db mysql -u root -p
+SHOW DATABASES;
+SHOW GRANTS FOR 'test'@'%';
+\q
+
+<span class="comment"># После создания базы — перезапускаем стек</span>
+docker-compose -f /root/web.yaml restart</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ Apache: 403 Forbidden или пустая страница</div>
+    <div class="error-cause">Причина: SELinux мешает httpd читать файлы, или неправильные права на index.php.</div>
+    <pre><span class="comment"># Устанавливаем права на файлы Apache</span>
+chmod 644 /var/www/html/index.php
+chown apache:apache /var/www/html/index.php
+
+<span class="comment"># SELinux — переводим в permissive если не сделали</span>
+setenforce 0
+
+<span class="comment"># Проверяем логи Apache</span>
+tail -50 /var/log/httpd/error_log</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ nginx -t: unknown directive "server" (при добавлении виртуальных хостов)</div>
+    <div class="error-cause">Причина: новые блоки server добавлены за пределами блока http { }, или неправильно расставлены скобки.</div>
+    <pre><span class="comment"># Проверяем структуру nginx.conf — блоки server должны быть ВНУТРИ http { }</span>
+<span class="comment"># Правильная структура:</span>
+<span class="comment"># http {</span>
+<span class="comment">#   server { ... }   ← существующий</span>
+<span class="comment">#   server { ... }   ← наш для web</span>
+<span class="comment">#   server { ... }   ← наш для docker</span>
+<span class="comment"># }</span>
+
+<span class="comment"># Смотрим конец файла — наши блоки должны быть ДО последней}</span>
+tail -30 /etc/nginx/nginx.conf</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ htpasswd: command not found</div>
+    <div class="error-cause">Причина: пакет httpd-tools не установлен (хотя должен быть предустановлен).</div>
+    <pre>dnf install httpd-tools -y</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ Ansible: UNREACHABLE — Connection timed out</div>
+    <div class="error-cause">Причина: хост недоступен по сети, или SSH-порт закрыт, или неверные учётные данные.</div>
+    <pre><span class="comment"># Проверяем доступность хоста</span>
+ping -c 3 192.168.100.2
+
+<span class="comment"># Проверяем SSH вручную</span>
+ssh -p 2026 sshuser@192.168.100.2
+
+<span class="comment"># Запускаем ping с подробным выводом</span>
+ansible 192.168.100.2 -m ping -vvv</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ chronyc sources: нет источников / все источники с "?"</div>
+    <div class="error-cause">Причина: нет связи с вышестоящим NTP-сервером, или неверный IP сервера в chrony.conf.</div>
+    <pre><span class="comment"># На ISP — проверяем что сервер слышит вышестоящий</span>
+chronyc sources -v
+
+<span class="comment"># Принудительная синхронизация</span>
+chronyc makestep
+
+<span class="comment"># Проверяем открыт ли порт 123 UDP на firewall</span>
+firewall-cmd --list-all | grep ntp
+firewall-cmd --permanent --add-service=ntp
+firewall-cmd --reload</pre>
+  </div>
+
+  <div class="error-row">
+    <div class="error-title">❌ mysql webdb &lt; dump.sql: ERROR 1049 (42000): Unknown database 'webdb'</div>
+    <div class="error-cause">Причина: база webdb не создана перед импортом.</div>
+    <pre><span class="comment"># Убедитесь что сначала создали базу:</span>
+mysql -u root -p -e "CREATE DATABASE webdb;"
+
+<span class="comment"># Затем импортируем</span>
+mysql -u root -p webdb < /mnt/web/dump.sql</pre>
+  </div>
+
+</div>
+
+</main>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  document.getElementById('progress').style.width = (scrollTop / scrollHeight * 100) + '%';
+});
+const sections = document.querySelectorAll('.section');
+const links = document.querySelectorAll('.sidebar a');
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.sidebar a[href="#${id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' }).observe && sections.forEach(s => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' }).observe(s);
+});
+</script>
+</body>
+</html>
